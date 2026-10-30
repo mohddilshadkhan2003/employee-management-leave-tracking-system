@@ -1,5 +1,16 @@
 const API_BASE = '/api';
 
+function safeText(value) {
+    return (value == null ? '' : String(value)).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function showMessage(elementId, message, isSuccess = false) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.textContent = message;
+    el.classList.toggle('success', isSuccess);
+}
+
 async function apiFetch(url, options = {}) {
     const response = await fetch(url, options);
     const data = await response.json().catch(() => ({}));
@@ -22,20 +33,34 @@ function statusClass(status) {
     return 'status-pending';
 }
 
+function formatCurrency(value) {
+    const number = Number(value || 0);
+    return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+    }).format(number);
+}
+
 function renderEmployeeTable(rows) {
     const tbody = document.getElementById('employeeTableBody');
     if (!tbody) return;
 
+    if (!Array.isArray(rows) || rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6">No employees found.</td></tr>';
+        return;
+    }
+
     tbody.innerHTML = rows.map(employee => `
         <tr>
-            <td>${employee.id}</td>
-            <td>${employee.name}</td>
-            <td>${employee.email}</td>
-            <td>${employee.phone || '-'}</td>
-            <td>${employee.salary ?? 0}</td>
+            <td>${safeText(employee.id)}</td>
+            <td>${safeText(employee.name)}</td>
+            <td>${safeText(employee.email)}</td>
+            <td>${safeText(employee.phone || '-')}</td>
+            <td>${safeText(formatCurrency(employee.salary))}</td>
             <td>
                 <div class="actions">
-                    <button class="danger" data-delete-id="${employee.id}">Delete</button>
+                    <button class="danger" data-delete-id="${safeText(employee.id)}">Delete</button>
                 </div>
             </td>
         </tr>
@@ -48,8 +73,9 @@ function renderEmployeeTable(rows) {
                 await apiFetch(`${API_BASE}/employees/${id}`, { method: 'DELETE' });
                 await loadEmployees();
                 await loadDashboard();
+                showMessage('employeeMessage', 'Employee removed successfully.', true);
             } catch (error) {
-                alert(error.message);
+                showMessage('employeeMessage', error.message, false);
             }
         });
     });
@@ -59,19 +85,24 @@ function renderLeaveTable(rows) {
     const tbody = document.getElementById('leaveTableBody');
     if (!tbody) return;
 
+    if (!Array.isArray(rows) || rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8">No leave requests available.</td></tr>';
+        return;
+    }
+
     tbody.innerHTML = rows.map(leave => `
         <tr>
-            <td>${leave.id}</td>
-            <td>${leave.employeeId}</td>
-            <td>${leave.leaveType}</td>
-            <td>${leave.startDate}</td>
-            <td>${leave.endDate}</td>
-            <td><span class="status-pill ${statusClass(leave.status)}">${leave.status || 'PENDING'}</span></td>
-            <td>${leave.reason || '-'}</td>
+            <td>${safeText(leave.id)}</td>
+            <td>${safeText(leave.employeeId)}</td>
+            <td>${safeText(leave.leaveType)}</td>
+            <td>${safeText(leave.startDate)}</td>
+            <td>${safeText(leave.endDate)}</td>
+            <td><span class="status-pill ${statusClass(leave.status)}">${safeText(leave.status || 'PENDING')}</span></td>
+            <td>${safeText(leave.reason || '-')}</td>
             <td>
                 <div class="actions">
-                    <button class="success" data-action="approve" data-id="${leave.id}">Approve</button>
-                    <button class="danger" data-action="reject" data-id="${leave.id}">Reject</button>
+                    <button class="success" data-action="approve" data-id="${safeText(leave.id)}">Approve</button>
+                    <button class="danger" data-action="reject" data-id="${safeText(leave.id)}">Reject</button>
                 </div>
             </td>
         </tr>
@@ -86,8 +117,9 @@ function renderLeaveTable(rows) {
                 await apiFetch(`${API_BASE}/leaves/${id}/status?status=${status}`, { method: 'PUT' });
                 await loadLeaves();
                 await loadDashboard();
+                showMessage('employeeMessage', `Leave request ${status.toLowerCase()} successfully.`, true);
             } catch (error) {
-                alert(error.message);
+                showMessage('employeeMessage', error.message, false);
             }
         });
     });
@@ -135,7 +167,7 @@ async function loadDepartments() {
     try {
         const departments = await apiFetch(`${API_BASE}/departments`);
         select.innerHTML = '<option value="">Select Department</option>' + departments.map(dep => 
-            `<option value="${dep.id}">${dep.departmentName}</option>`
+            `<option value="${dep.id}">${safeText(dep.departmentName)}</option>`
         ).join('');
     } catch (error) {
         console.error(error);
@@ -163,7 +195,6 @@ function bindEmployeeForm() {
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const message = document.getElementById('employeeMessage');
 
         const payload = {
             name: document.getElementById('name').value.trim(),
@@ -180,14 +211,12 @@ function bindEmployeeForm() {
                 body: JSON.stringify(payload)
             });
 
-            message.textContent = 'Employee added successfully';
-            message.classList.add('success');
+            showMessage('employeeMessage', 'Employee added successfully.', true);
             form.reset();
             await loadEmployees();
             await loadDashboard();
         } catch (error) {
-            message.textContent = error.message;
-            message.classList.remove('success');
+            showMessage('employeeMessage', error.message, false);
         }
     });
 }
@@ -215,13 +244,17 @@ function setupEmployeePage() {
                 body: JSON.stringify(payload)
             });
 
-            leaveMessage.textContent = 'Leave request submitted successfully';
-            leaveMessage.classList.add('success');
+            if (leaveMessage) {
+                leaveMessage.textContent = 'Leave request submitted successfully';
+                leaveMessage.classList.add('success');
+            }
             leaveForm.reset();
             loadEmployeeLeaves(payload.employeeId);
         } catch (error) {
-            leaveMessage.textContent = error.message;
-            leaveMessage.classList.remove('success');
+            if (leaveMessage) {
+                leaveMessage.textContent = error.message;
+                leaveMessage.classList.remove('success');
+            }
         }
     });
 
@@ -241,10 +274,10 @@ async function loadEmployeeLeaves(employeeId) {
         const rows = await apiFetch(`${API_BASE}/employees/${employeeId}/leaves`);
         table.innerHTML = rows.map(leave => `
             <tr>
-                <td>${leave.leaveType}</td>
-                <td>${leave.startDate}</td>
-                <td>${leave.endDate}</td>
-                <td><span class="status-pill ${statusClass(leave.status)}">${leave.status || 'PENDING'}</span></td>
+                <td>${safeText(leave.leaveType)}</td>
+                <td>${safeText(leave.startDate)}</td>
+                <td>${safeText(leave.endDate)}</td>
+                <td><span class="status-pill ${statusClass(leave.status)}">${safeText(leave.status || 'PENDING')}</span></td>
             </tr>
         `).join('');
     } catch (error) {
@@ -258,10 +291,15 @@ function setupDepartmentPage() {
     if (!form || !table) return;
 
     const renderDepartments = (departments) => {
+        if (!Array.isArray(departments) || departments.length === 0) {
+            table.innerHTML = '<tr><td colspan="2">No departments available.</td></tr>';
+            return;
+        }
+
         table.innerHTML = departments.map(dep => `
             <tr>
-                <td>${dep.id}</td>
-                <td>${dep.departmentName}</td>
+                <td>${safeText(dep.id)}</td>
+                <td>${safeText(dep.departmentName)}</td>
             </tr>
         `).join('');
     };
@@ -282,13 +320,18 @@ function setupDepartmentPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ departmentName: input.value.trim() })
             });
-            message.textContent = 'Department added successfully';
-            message.classList.add('success');
+
+            if (message) {
+                message.textContent = 'Department added successfully';
+                message.classList.add('success');
+            }
             form.reset();
             await refreshDepartments();
         } catch (error) {
-            message.textContent = error.message;
-            message.classList.remove('success');
+            if (message) {
+                message.textContent = error.message;
+                message.classList.remove('success');
+            }
         }
     });
 
@@ -302,13 +345,11 @@ function attachLogoutHandlers() {
 }
 
 function initializePage() {
-    const role = localStorage.getItem('role');
     const username = localStorage.getItem('username');
     const badge = document.getElementById('userBadge');
     if (badge) {
         badge.textContent = username ? `Welcome, ${username}` : 'Welcome';
     }
-
     attachLogoutHandlers();
 }
 
