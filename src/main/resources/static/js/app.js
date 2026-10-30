@@ -17,13 +17,19 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         const result = await response.json();
 
         if (response.ok && result.success) {
+            localStorage.setItem('role', result.role);
+            localStorage.setItem('username', result.username);
             messageBox.textContent = result.message;
             messageBox.classList.add('success');
 
             if (result.role === 'ADMIN') {
-                window.location.href = '/admin.html';
+                setTimeout(() => {
+                    window.location.href = '/admin.html';
+                }, 600);
             } else {
-                window.location.href = '/employee.html';
+                setTimeout(() => {
+                    window.location.href = '/employee.html';
+                }, 600);
             }
         } else {
             messageBox.textContent = result.message || 'Login failed';

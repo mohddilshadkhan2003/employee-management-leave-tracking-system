@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Portal</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <h2>Employee Portal</h2>
+            <div class="user-badge" id="userBadge">Welcome</div>
+        </header>
+
+        <div class="layout-grid">
+            <section class="panel">
+                <div class="panel-header">
+                    <h3>Apply for Leave</h3>
+                </div>
+                <form id="leaveForm">
+                    <div class="form-grid">
+                        <div>
+                            <label for="employeeId">Employee ID</label>
+                            <input id="employeeId" type="number" min="1" required />
+                        </div>
+                        <div>
+                            <label for="leaveType">Leave Type</label>
+                            <select id="leaveType" required>
+                                <option value="SICK">Sick Leave</option>
+                                <option value="CASUAL">Casual Leave</option>
+                                <option value="ANNUAL">Annual Leave</option>
+                                <option value="MATERNITY">Maternity Leave</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="startDate">Start Date</label>
+                            <input id="startDate" type="date" required />
+                        </div>
+                        <div>
+                            <label for="endDate">End Date</label>
+                            <input id="endDate" type="date" required />
+                        </div>
+                        <div class="full-width">
+                            <label for="reason">Reason</label>
+                            <textarea id="reason" rows="4" placeholder="Add your leave reason"></textarea>
+                        </div>
+                        <div class="full-width">
+                            <button class="success" type="submit">Submit Leave Request</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="leaveMessage" class="message"></div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <h3>Your Leave History</h3>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeLeaveTable"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('role');
+            const username = localStorage.getItem('username');
+            document.getElementById('userBadge').textContent = username ? `Logged in as ${username}` : 'Employee';
+
+            if (role === 'ADMIN') {
+                window.location.href = '/admin.html';
+                return;
+            }
+
+            setupEmployeePage();
+        });
+    </script>
+</body>
+</html>

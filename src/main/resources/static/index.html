@@ -1,35 +1,223 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employee Management Portal</title>
-    <link rel="stylesheet" href="/css/styles.css" />
-</head>
-<body>
-    <div class="container">
-        <div class="card login-card">
-            <h1>Employee Management System</h1>
-            <p class="subtitle">Login to continue</p>
+# Employee Management & Leave Tracking System
 
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input id="username" type="text" placeholder="Enter username" required />
-                </div>
+A professional full-stack Java project for managing employee records and leave requests in a typical organization. The system includes role-based access for admins and employees, secure login flow, employee CRUD operations, and leave approval workflow.
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input id="password" type="password" placeholder="Enter password" required />
-                </div>
+## Overview
 
-                <button type="submit">Login</button>
-            </form>
+This project is designed to help students and developers build a realistic, portfolio-ready application using:
+- Java 8+
+- Spring Boot 2.7.x
+- Spring MVC
+- JDBC / JdbcTemplate
+- MySQL
+- HTML, CSS, and JavaScript
 
-            <div id="message" class="message"></div>
-        </div>
-    </div>
+It simulates a complete employee management system where:
+- Admins manage employees and handle leave approvals
+- Employees apply for leave and view status updates
+- Business logic and validation are handled in the backend
 
-    <script src="/js/app.js"></script>
-</body>
-</html>
+## Key Features
+
+### Admin Features
+- Admin login
+- Add new employees
+- View all employees
+- Search employees by ID or name
+- Delete employees
+- View leave requests
+- Approve or reject leave applications
+- Dashboard summary with key metrics
+
+### Employee Features
+- Employee login
+- Submit leave requests
+- View leave history
+- Track request status
+
+### General Features
+- Role-based access
+- Duplicate email validation
+- Leave date validation
+- Clean dashboard UI
+- REST API-driven application
+- Java + MySQL integrated project structure
+
+## Tech Stack
+
+### Backend
+- Java
+- Spring Boot 2.7.x
+- Spring MVC
+- JDBC / JdbcTemplate
+- Maven
+
+### Frontend
+- HTML
+- CSS
+- JavaScript
+
+### Database
+- MySQL
+
+## Project Structure
+
+```text
+employee-management-leave-tracking-system
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── employee
+│   │   │           └── management
+│   │   │               ├── controller
+│   │   │               ├── dto
+│   │   │               ├── exception
+│   │   │               ├── model
+│   │   │               ├── repository
+│   │   │               ├── service
+│   │   │               └── EmployeeManagementApplication.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       ├── schema.sql
+│   │       └── static
+│   │           ├── css
+│   │           ├── js
+│   │           ├── index.html
+│   │           ├── admin.html
+│   │           └── employee.html
+│   └── test
+├── pom.xml
+├── .gitignore
+├── README.md
+└── database
+    └── schema.sql
+```
+
+## Database Setup
+
+Create the database:
+
+```sql
+CREATE DATABASE employee_management;
+```
+
+Then configure the MySQL connection in:
+
+```properties
+src/main/resources/application.properties
+```
+
+Example configuration:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/employee_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
+
+## Default Login
+
+Use this default admin account:
+
+```text
+Username: admin
+Password: admin123
+```
+
+## Run the Application
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+Then open in the browser:
+
+```text
+http://localhost:8080
+```
+
+## REST API Endpoints
+
+### Authentication
+- `POST /api/auth/login`
+
+### Employees
+- `GET /api/employees`
+- `POST /api/employees`
+- `GET /api/employees/{id}`
+- `PUT /api/employees/{id}`
+- `DELETE /api/employees/{id}`
+- `GET /api/employees/search?keyword=...`
+
+### Leave Requests
+- `POST /api/leaves`
+- `GET /api/leaves`
+- `GET /api/leaves/{id}`
+- `PUT /api/leaves/{id}/status?status=APPROVED`
+- `DELETE /api/leaves/{id}`
+
+### Dashboard
+- `GET /api/dashboard`
+
+### Departments
+- `GET /api/departments`
+- `POST /api/departments`
+
+## Sample API Calls
+
+### Login
+
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+### Add employee
+
+```bash
+curl -X POST http://localhost:8080/api/employees \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name":"John Doe",
+    "email":"john@example.com",
+    "phone":"9876543210",
+    "departmentId":1,
+    "salary":45000
+  }'
+```
+
+### Apply leave
+
+```bash
+curl -X POST http://localhost:8080/api/leaves \
+  -H "Content-Type: application/json" \
+  -d '{
+    "employeeId":1,
+    "leaveType":"SICK",
+    "startDate":"2026-11-10",
+    "endDate":"2026-11-12",
+    "reason":"Medical checkup"
+  }'
+```
+
+## Future Enhancements
+
+- Dashboard charts and analytics
+- Pagination for employee list
+- Role-based protected routes
+- Better validation and form error handling
+- Department management UI
+- Search and filters for leave requests
+- Logging and audit trail
+
+## License
+
+This project is built for educational and learning purposes.
+
+## Conclusion
+
+The Employee Management & Leave Tracking System is a realistic Java full-stack application that demonstrates how business workflows, database integration, and web interfaces can work together in a professional environment. It is suitable for student projects, internships, and portfolio demonstrations.

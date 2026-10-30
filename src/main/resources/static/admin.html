@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <h2>Admin Dashboard</h2>
+            <div class="user-badge" id="userBadge">Welcome</div>
+        </header>
+
+        <section class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Employees</h3>
+                <div class="value" id="totalEmployees">0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Pending Leave Requests</h3>
+                <div class="value" id="pendingLeaves">0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Approved Leaves</h3>
+                <div class="value" id="approvedLeaves">0</div>
+            </div>
+        </section>
+
+        <div class="layout-grid">
+            <section class="panel">
+                <div class="panel-header">
+                    <h3>Employee Records</h3>
+                    <input id="employeeSearch" type="search" placeholder="Search by name or ID" />
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Salary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <aside class="panel">
+                <div class="panel-header">
+                    <h3>Add Employee</h3>
+                </div>
+                <form id="employeeForm">
+                    <div class="form-grid">
+                        <div class="full-width">
+                            <label for="name">Full Name</label>
+                            <input id="name" name="name" type="text" required />
+                        </div>
+                        <div>
+                            <label for="email">Email</label>
+                            <input id="email" name="email" type="email" required />
+                        </div>
+                        <div>
+                            <label for="phone">Phone</label>
+                            <input id="phone" name="phone" type="text" required />
+                        </div>
+                        <div>
+                            <label for="departmentId">Department</label>
+                            <select id="departmentId" name="departmentId"></select>
+                        </div>
+                        <div>
+                            <label for="salary">Salary</label>
+                            <input id="salary" name="salary" type="number" min="0" step="0.01" required />
+                        </div>
+                        <div class="full-width">
+                            <button type="submit">Save Employee</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="employeeMessage" class="message"></div>
+            </aside>
+        </div>
+
+        <section class="panel" style="margin-top: 28px;">
+            <div class="panel-header">
+                <h3>Leave Requests</h3>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee ID</th>
+                            <th>Type</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Status</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaveTableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('role');
+            const username = localStorage.getItem('username');
+            document.getElementById('userBadge').textContent = username ? `Logged in as ${username}` : 'Admin';
+
+            if (role !== 'ADMIN') {
+                window.location.href = '/index.html';
+                return;
+            }
+
+            loadDashboard();
+            loadEmployees();
+            loadLeaves();
+            loadDepartments();
+            bindSearch();
+            bindEmployeeForm();
+        });
+    </script>
+</body>
+</html>
