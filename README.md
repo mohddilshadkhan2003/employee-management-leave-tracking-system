@@ -1,50 +1,67 @@
-# Employee Management & Leave Tracking System
+# EmployeePulse HRMS
 
-The Employee Management & Leave Tracking System is a full-stack Java project designed to automate everyday HR operations such as employee onboarding, department management, leave application, and approval workflows. It helps organizations manage employee records efficiently while improving transparency and decision-making. This project combines Spring Boot, MySQL, and a responsive frontend to create a realistic business application. It is suitable for internship portfolios, final-year projects, and practical Java learning. The system is structured in a clean layered architecture to make the code maintainable and easy to extend.
+EmployeePulse HRMS is a modern employee management and leave tracking system built with Java, Spring Boot, MySQL, and a responsive frontend. It is designed to simplify human resource administration by providing a centralized system for managing employee records, departments, and leave requests with role-based access.
 
-## Project Overview
+This project is created to reflect a real-world HR operations workflow and is suitable for final-year Java projects, internship portfolios, and practical learning. It demonstrates how backend APIs, database interaction, and frontend behavior work together in an enterprise-grade application.
 
-This system is built for organizations that want a simple yet effective way to manage employee information and leave requests. The application allows administrators to add employees, assign departments, review leave requests, and approve or reject them based on business rules. Employees can log in to submit leave requests, check their history, and monitor the status of requests in real time. The project emphasizes role-based access, data validation, and real-world workflow automation. By using Java, Spring Boot, and JDBC, it demonstrates how backend systems interact with a database and frontend interface in a production-like environment.
+Developed by: Mohd Dilshad Khan
 
-## Why This Project Matters
+## Why This Project
 
-- It simulates a real HR and admin workflow used by modern companies.
-- It demonstrates practical Java programming with database connectivity.
-- It combines backend APIs, business logic, and frontend interface development.
-- It helps freshers build a strong portfolio project with real-world relevance.
-- It is easy to understand, scale, and improve with additional modules.
+This project addresses a common business need: managing people and time efficiently. In real organizations, HR teams need a structured way to handle onboarding, leave requests, approvals, and employee records. EmployeePulse brings this workflow into a clean digital system where employees can apply for leave and admins can review and act on requests in a streamlined way.
 
-## Key Features
+It is more than a CRUD application because it reflects real process flow, data validation, and decision-making logic that organizations depend on every day.
+
+## Business Problem Solved
+
+Traditional employee management often depends on spreadsheets, emails, or paper records, which leads to:
+
+- delayed leave approvals
+- data duplication and employee record errors
+- poor visibility into employee status
+- manual HR overhead
+- lack of centralized employee tracking
+
+EmployeePulse solves these issues by providing:
+
+- centralized employee management
+- automated leave request tracking
+- role-based access control
+- faster approval workflows
+- dashboard-based operational visibility
+
+## Core Features
 
 ### Admin Features
-- Admin login with role-based access
-- Add new employees
-- View all employee details
-- Search employees by ID or name
+- Secure admin login
+- Add employee records
+- View all employees
+- Search employee by name or ID
 - Delete employee records
 - Manage departments
-- View all pending and processed leave requests
-- Approve or reject leave applications
-- Dashboard summary with employee and leave metrics
+- View all leave requests
+- Approve or reject leave requests
+- Track summary metrics in dashboard
 
 ### Employee Features
 - Employee login
-- Apply for leave with selected leave type
-- Enter leave start and end dates
-- Provide leave reason
-- View leave history and current status
-- Track approvals and rejections
+- Apply for leave
+- Choose leave type and date range
+- Provide reason for leave
+- View leave history
+- Check current leave status
 
-### General Features
-- Spring Boot MVC architecture
-- MySQL database integration using JDBC
-- REST API-driven communication
-- Clean and responsive dashboard UI
+### Application Features
+- Professional dashboard interface
+- Responsive design for desktop and tablet screens
+- MySQL database integration
+- Role-based access control
 - Duplicate email validation
 - Leave date validation
-- Error handling with meaningful API responses
+- Rest API-driven architecture
+- Clean backend service structure
 
-## Tech Stack
+## Technology Stack
 
 - Java 8+
 - Spring Boot 2.7.x
@@ -56,19 +73,19 @@ This system is built for organizations that want a simple yet effective way to m
 - CSS
 - JavaScript
 
-## Project Architecture
+## Architecture Overview
 
 ```text
-+------------------+        +--------------------+        +---------------------+
-|   Frontend UI    | ----> | Spring MVC REST    | ----> | MySQL Database      |
-| HTML/CSS/JS      |        | Controllers        |        | employees           |
-| admin.html       |        | Services           |        | departments        |
-| employee.html    |        | Repositories       |        | leave_requests     |
-| department.html  |        | JDBC / JdbcTemplate|        | users               |
-+------------------+        +--------------------+        +---------------------+
++--------------------------+        +---------------------------+        +----------------------+
+| Frontend (HTML/CSS/JS)  | ----> | Spring Boot REST API      | ----> | MySQL Database       |
+| Login, Admin Dashboard  |        | Controller + Service      |        | employees            |
+| Employee Portal          |        | Repository + JDBC         |        | departments          |
+| Department Module       |        | Validation + Business     |        | leave_requests       |
++--------------------------+        | Logic                    |        | users                |
+                                    +---------------------------+        +----------------------+
 ```
 
-## Data Flow Diagram
+## Request Flow
 
 ```text
 User Action
@@ -77,36 +94,40 @@ User Action
 Frontend Form / Browser
    |
    v
-REST API Request
+HTTP Request to REST API
    |
    v
 Controller Layer
    |
    v
-Service Layer (Validation & Business Logic)
-   |
+Service Layer
+   |   - validates payload
+   |   - checks duplicate data
+   |   - applies business rules
    v
-Repository Layer (SQL Queries)
+Repository Layer
    |
    v
 MySQL Database
    |
    v
-Response back to UI
+Response Returned to UI
 ```
 
-## System Workflow
+## Workflow
 
 ```text
-1. Admin or Employee opens the login page.
-2. Credentials are validated in the backend.
-3. Based on role, user is redirected to admin or employee dashboard.
-4. Admin can add employees, manage departments, and approve leave requests.
-5. Employee can apply for leave and view leave history.
-6. The request is saved in MySQL and reflected in the dashboard.
+1. User logs in to the system.
+2. Backend validates login credentials.
+3. Role is identified as Admin or Employee.
+4. Admin can manage employees, departments, and leave approvals.
+5. Employee can submit leave requests and view leave history.
+6. Leave request is stored in database and visible in dashboard.
+7. Admin approves or rejects the request.
+8. Data is refreshed dynamically on the dashboard.
 ```
 
-## Project Structure
+## System Modules
 
 ```text
 employee-management-leave-tracking-system
@@ -141,83 +162,11 @@ employee-management-leave-tracking-system
     └── schema.sql
 ```
 
-## Prerequisites
-
-Before running the project, make sure you have the following installed on your system:
-
-- Java 8 or above
-- Maven
-- MySQL Server
-- IntelliJ IDEA or VS Code
-- Internet access for Maven dependencies
-
-## How This Project Runs on Your System
-
-Follow these steps carefully to run the project successfully on your local machine:
-
-### Step 1: Install and Start MySQL
-Open MySQL Workbench or terminal and create the required database:
-
-```sql
-CREATE DATABASE employee_management;
-```
-
-### Step 2: Update Database Configuration
-Open the file:
-
-```properties
-src/main/resources/application.properties
-```
-
-Update the database username, password, and URL according to your system setup:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/employee_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-spring.datasource.username=root
-spring.datasource.password=root
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-```
-
-### Step 3: Build the Project
-Open the terminal in the project root and run:
-
-```bash
-mvn clean install
-```
-
-### Step 4: Run the Spring Boot Application
-Now start the project:
-
-```bash
-mvn spring-boot:run
-```
-
-### Step 5: Open the Application in Browser
-Once the project starts successfully, open:
-
-```text
-http://localhost:8080
-```
-
-### Step 6: Login to the Application
-Use the default admin account:
-
-```text
-Username: admin
-Password: admin123
-```
-
-## Default Login Credentials
-
-```text
-Admin User
-Username: admin
-Password: admin123
-```
-
 ## Database Design
 
 ```sql
+CREATE DATABASE employee_management;
+
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(100) NOT NULL UNIQUE,
@@ -255,12 +204,75 @@ CREATE TABLE leave_requests (
 );
 ```
 
+## Prerequisites
+
+Before running the project, make sure your system has:
+
+- Java 8 or higher
+- Maven
+- MySQL Server
+- IntelliJ IDEA / Eclipse / VS Code
+- A working local environment for Java projects
+
+## How to Run This Project on Your System
+
+### 1. Create the database
+Open MySQL and run:
+
+```sql
+CREATE DATABASE employee_management;
+```
+
+### 2. Configure the database in application.properties
+Open:
+
+```properties
+src/main/resources/application.properties
+```
+
+Update with your local MySQL configuration:
+
+```properties
+spring.application.name=employee-management-leave-tracking-system
+server.port=8080
+
+spring.datasource.url=jdbc:mysql://localhost:3306/employee_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
+
+### 3. Build the project
+From the root folder of the project, run:
+
+```bash
+mvn clean install
+```
+
+### 4. Run the application
+```bash
+mvn spring-boot:run
+```
+
+### 5. Open the app in browser
+Visit:
+
+```text
+http://localhost:8080
+```
+
+### 6. Login using the default admin account
+```text
+Username: admin
+Password: admin123
+```
+
 ## REST API Endpoints
 
 ### Authentication
 - `POST /api/auth/login`
 
-### Employees
+### Employee APIs
 - `GET /api/employees`
 - `POST /api/employees`
 - `GET /api/employees/{id}`
@@ -268,32 +280,30 @@ CREATE TABLE leave_requests (
 - `DELETE /api/employees/{id}`
 - `GET /api/employees/search?keyword=...`
 
-### Departments
+### Department APIs
 - `GET /api/departments`
 - `POST /api/departments`
 
-### Leave Requests
+### Leave APIs
 - `POST /api/leaves`
 - `GET /api/leaves`
 - `GET /api/leaves/{id}`
 - `PUT /api/leaves/{id}/status?status=APPROVED`
 - `DELETE /api/leaves/{id}`
 
-### Dashboard
+### Dashboard APIs
 - `GET /api/dashboard`
 
-## Example API Usage
+## Sample API Calls
 
-### Login Call
-
+### Login
 ```bash
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin123"}'
 ```
 
-### Add Employee
-
+### Add employee
 ```bash
 curl -X POST http://localhost:8080/api/employees \
   -H "Content-Type: application/json" \
@@ -306,8 +316,7 @@ curl -X POST http://localhost:8080/api/employees \
   }'
 ```
 
-### Apply Leave
-
+### Apply leave
 ```bash
 curl -X POST http://localhost:8080/api/leaves \
   -H "Content-Type: application/json" \
@@ -320,21 +329,46 @@ curl -X POST http://localhost:8080/api/leaves \
   }'
 ```
 
-## How the Project Works
+## How It Works
 
-The application begins with a login page where the user chooses their role. The backend checks credentials and returns the appropriate role. Once the user is authorized, they are redirected to either the admin dashboard or the employee portal. Admins can manage employee records, departments, and leave approvals, while employees can submit leave requests and check status. Every action interacts with the MySQL database through JDBC queries, and the response is sent back to the frontend for display.
+The application follows a structured flow:
+
+1. User enters login credentials.
+2. The backend checks the username and password against the database.
+3. The role is used to route the user to either the admin or employee dashboard.
+4. Admins can manage employees, departments, and leave approvals.
+5. Employees can submit leave requests and track their own leave history.
+6. Data is stored in MySQL and returned dynamically to the interface.
+7. Dashboard values refresh as employee and leave records change.
 
 ## Future Enhancements
 
-- Pagination and sorting for large employee data
-- Role-based route security improvements
-- Leave statistics charts and analytics
-- Email notifications for approval and rejection
-- Better validation and exception handling
-- Advanced reporting features
+- Employee edit modal and profile page
+- Pagination for large employee data
+- Department editing and deletion
+- Charts and visual analytics
+- Export reports to PDF/CSV
+- Role-based route protection
+- Email notifications for leave approval status
+- Better audit logging and activity tracking
+
+## Project Impact
+
+This project highlights practical Java backend development and data-driven business logic. It is useful for demonstrating essential software engineering concepts such as:
+
+- REST API development
+- JDBC database operations
+- role-based systems
+- model-view-controller architecture
+- web application integration
+- validation and exception handling
 
 ## Conclusion
 
-The Employee Management & Leave Tracking System is a practical and professional Java project that helps users understand how real-world HR and employee management applications are built. It combines backend logic, database management, API development, and frontend interaction into a coherent software solution. This project is ideal for students, beginners, and developers who want to create a portfolio-worthy application that is both scalable and easy to understand.
+EmployeePulse HRMS is a practical, portfolio-ready project that mirrors real HR management workflows. It is designed to be easy to understand, visually clean, and technically meaningful. As a Java full-stack project, it offers strong learning value and showcases how a real-world employee management platform can be built with Spring Boot and MySQL.
 
-If you are learning Java full-stack development, this project gives you a strong foundation in Spring Boot, MySQL integration, business logic, and web application development.
+This project is a good representation of professional software development and is organized in a way that can be extended into a larger enterprise application in the future.
+
+Made with focus on mentorship, growth, and portfolio quality.
+
+Developed by Mohd Dilshad Khan
