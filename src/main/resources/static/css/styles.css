@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #eaf2ff 0%, #eef8ff 100%);
+    background: linear-gradient(135deg, #f0f7ff 0%, #eef8ff 100%);
     color: #1f2937;
 }
 
@@ -141,6 +141,12 @@ button.success {
     font-size: 1.7rem;
 }
 
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .user-badge {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.12);
@@ -174,6 +180,22 @@ button.success {
     font-size: 2rem;
     font-weight: 700;
     color: #1e293b;
+}
+
+.quick-nav {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+}
+
+.quick-nav a {
+    text-decoration: none;
+    background: #e8f0ff;
+    color: #1d4ed8;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
 .layout-grid {

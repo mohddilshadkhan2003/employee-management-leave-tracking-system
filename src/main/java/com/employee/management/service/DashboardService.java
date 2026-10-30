@@ -21,6 +21,8 @@ public class DashboardService {
         Map<String, Object> summary = new HashMap<>();
         summary.put("totalEmployees", employeeRepository.findAll().size());
         summary.put("pendingLeaveRequests", leaveRepository.countPending());
+        summary.put("approvedLeaveRequests", leaveRepository.countApproved());
+        summary.put("rejectedLeaveRequests", leaveRepository.countRejected());
         return summary;
     }
 }

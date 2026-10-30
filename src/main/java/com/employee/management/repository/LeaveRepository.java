@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +80,22 @@ public class LeaveRepository {
     }
 
     public long countPending() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM leave_requests WHERE status = 'PENDING'", Long.class);
+        return countByStatus("PENDING");
+    }
+
+    public long countApproved() {
+        return countByStatus("APPROVED");
+    }
+
+    public long countRejected() {
+        return countByStatus("REJECTED");
+    }
+
+    public long countByStatus(String status) {
+        return jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM leave_requests WHERE status = ?",
+                Long.class,
+                status
+        );
     }
 }

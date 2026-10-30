@@ -1,251 +1,199 @@
-const API_BASE = '/api';
+# Employee Management & Leave Tracking System
 
-async function apiFetch(url, options = {}) {
-    const response = await fetch(url, options);
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-        throw new Error(data.message || 'Request failed');
-    }
-    return data;
-}
+A modern full-stack Java application for managing employee records, departments, and leave approvals in an organization. It is designed as a realistic project for Java learners and internship portfolios.
 
-function statusClass(status) {
-    const normalized = (status || '').toUpperCase();
-    if (normalized === 'APPROVED') return 'status-approved';
-    if (normalized === 'REJECTED') return 'status-rejected';
-    return 'status-pending';
-}
+## Features
 
-function renderEmployeeTable(rows) {
-    const tbody = document.getElementById('employeeTableBody');
-    if (!tbody) return;
+### Admin Features
+- Admin login
+- Add employee records
+- View all employee records
+- Search employees by ID or name
+- Delete employee records
+- Manage departments
+- View leave requests
+- Approve or reject leave requests
+- Dashboard with summary metrics
 
-    tbody.innerHTML = rows.map(employee => `
-        <tr>
-            <td>${employee.id}</td>
-            <td>${employee.name}</td>
-            <td>${employee.email}</td>
-            <td>${employee.phone || '-'}</td>
-            <td>${employee.salary ?? 0}</td>
-            <td>
-                <div class="actions">
-                    <button class="danger" data-delete-id="${employee.id}">Delete</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+### Employee Features
+- Employee login
+- Apply for leave
+- Select leave type and date range
+- View leave history
+- Track leave status
 
-    tbody.querySelectorAll('[data-delete-id]').forEach(button => {
-        button.addEventListener('click', async () => {
-            const id = button.getAttribute('data-delete-id');
-            try {
-                await apiFetch(`${API_BASE}/employees/${id}`, { method: 'DELETE' });
-                await loadEmployees();
-                await loadDashboard();
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    });
-}
+### General Features
+- Java-based backend with Spring Boot and JDBC
+- MySQL database integration
+- Role-based access between admin and employee
+- Clean and responsive frontend
+- REST API support
+- Validation for duplicate emails and invalid leave dates
 
-function renderLeaveTable(rows) {
-    const tbody = document.getElementById('leaveTableBody');
-    if (!tbody) return;
+## Tech Stack
 
-    tbody.innerHTML = rows.map(leave => `
-        <tr>
-            <td>${leave.id}</td>
-            <td>${leave.employeeId}</td>
-            <td>${leave.leaveType}</td>
-            <td>${leave.startDate}</td>
-            <td>${leave.endDate}</td>
-            <td><span class="status-pill ${statusClass(leave.status)}">${leave.status || 'PENDING'}</span></td>
-            <td>${leave.reason || '-'}</td>
-            <td>
-                <div class="actions">
-                    <button class="success" data-action="approve" data-id="${leave.id}">Approve</button>
-                    <button class="danger" data-action="reject" data-id="${leave.id}">Reject</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+- Java 8+
+- Spring Boot 2.7.x
+- Spring MVC
+- JDBC / JdbcTemplate
+- MySQL
+- HTML
+- CSS
+- JavaScript
+- Maven
 
-    tbody.querySelectorAll('[data-action]').forEach(button => {
-        button.addEventListener('click', async () => {
-            const id = button.getAttribute('data-id');
-            const action = button.getAttribute('data-action');
-            const status = action === 'approve' ? 'APPROVED' : 'REJECTED';
-            try {
-                await apiFetch(`${API_BASE}/leaves/${id}/status?status=${status}`, { method: 'PUT' });
-                await loadLeaves();
-                await loadDashboard();
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    });
-}
+## Project Architecture
 
-async function loadDashboard() {
-    const summary = document.getElementById('totalEmployees');
-    const pending = document.getElementById('pendingLeaves');
-    const approved = document.getElementById('approvedLeaves');
+```text
+employee-management-leave-tracking-system
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── com
+│   │   │       └── employee
+│   │   │           └── management
+│   │   │               ├── controller
+│   │   │               ├── dto
+│   │   │               ├── exception
+│   │   │               ├── model
+│   │   │               ├── repository
+│   │   │               ├── service
+│   │   │               └── EmployeeManagementApplication.java
+│   │   └── resources
+│   │       ├── application.properties
+│   │       ├── schema.sql
+│   │       └── static
+│   │           ├── css
+│   │           ├── js
+│   │           ├── index.html
+│   │           ├── admin.html
+│   │           ├── employee.html
+│   │           └── department.html
+│   └── test
+├── pom.xml
+├── .gitignore
+├── README.md
+└── database
+    └── schema.sql
+```
 
-    if (!summary || !pending || !approved) return;
+## Database Setup
 
-    try {
-        const data = await apiFetch(`${API_BASE}/dashboard`);
-        summary.textContent = data.totalEmployees ?? 0;
-        pending.textContent = data.pendingLeaveRequests ?? 0;
-        approved.textContent = data.approvedLeaveRequests ?? 0;
-    } catch (error) {
-        console.error(error);
-    }
-}
+Create the database:
 
-async function loadEmployees() {
-    try {
-        const employees = await apiFetch(`${API_BASE}/employees`);
-        renderEmployeeTable(employees);
-    } catch (error) {
-        console.error(error);
-    }
-}
+```sql
+CREATE DATABASE employee_management;
+```
 
-async function loadLeaves() {
-    try {
-        const leaves = await apiFetch(`${API_BASE}/leaves`);
-        renderLeaveTable(leaves);
-    } catch (error) {
-        console.error(error);
-    }
-}
+Then configure it in:
 
-async function loadDepartments() {
-    const select = document.getElementById('departmentId');
-    if (!select) return;
+```properties
+src/main/resources/application.properties
+```
 
-    try {
-        const departments = await apiFetch(`${API_BASE}/departments`);
-        if (!departments.length) {
-            const option = document.createElement('option');
-            option.textContent = 'No departments available';
-            option.value = '';
-            select.appendChild(option);
-            return;
-        }
+Example:
 
-        select.innerHTML = '<option value="">Select Department</option>' + departments.map(dep => 
-            `<option value="${dep.id}">${dep.departmentName}</option>`
-        ).join('');
-    } catch (error) {
-        console.error(error);
-    }
-}
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/employee_management?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+```
 
-function bindSearch() {
-    const search = document.getElementById('employeeSearch');
-    if (!search) return;
+## Default Login
 
-    search.addEventListener('input', async (event) => {
-        const keyword = event.target.value.trim();
-        const employees = await apiFetch(`${API_BASE}/employees/search?keyword=${encodeURIComponent(keyword)}`);
-        renderEmployeeTable(employees);
-    });
-}
+```text
+Username: admin
+Password: admin123
+```
 
-function bindEmployeeForm() {
-    const form = document.getElementById('employeeForm');
-    if (!form) return;
+## Run the Project
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const message = document.getElementById('employeeMessage');
+```bash
+mvn clean install
+mvn spring-boot:run
+```
 
-        const payload = {
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            departmentId: document.getElementById('departmentId').value,
-            salary: Number(document.getElementById('salary').value)
-        };
+Open the app in browser:
 
-        try {
-            await apiFetch(`${API_BASE}/employees`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+```text
+http://localhost:8080
+```
 
-            message.textContent = 'Employee added successfully';
-            message.classList.add('success');
-            form.reset();
-            await loadEmployees();
-            await loadDashboard();
-        } catch (error) {
-            message.textContent = error.message;
-            message.classList.remove('success');
-        }
-    });
-}
+## API Endpoints
 
-function setupEmployeePage() {
-    const leaveForm = document.getElementById('leaveForm');
-    const leaveMessage = document.getElementById('leaveMessage');
+### Authentication
+- `POST /api/auth/login`
 
-    if (!leaveForm) return;
+### Employees
+- `GET /api/employees`
+- `POST /api/employees`
+- `GET /api/employees/{id}`
+- `PUT /api/employees/{id}`
+- `DELETE /api/employees/{id}`
+- `GET /api/employees/search?keyword=...`
 
-    leaveForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const payload = {
-            employeeId: Number(document.getElementById('employeeId').value),
-            leaveType: document.getElementById('leaveType').value,
-            startDate: document.getElementById('startDate').value,
-            endDate: document.getElementById('endDate').value,
-            reason: document.getElementById('reason').value
-        };
+### Departments
+- `GET /api/departments`
+- `POST /api/departments`
 
-        try {
-            await apiFetch(`${API_BASE}/leaves`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+### Leave Requests
+- `POST /api/leaves`
+- `GET /api/leaves`
+- `GET /api/leaves/{id}`
+- `PUT /api/leaves/{id}/status?status=APPROVED`
+- `DELETE /api/leaves/{id}`
 
-            leaveMessage.textContent = 'Leave request submitted successfully';
-            leaveMessage.classList.add('success');
-            leaveForm.reset();
-            loadEmployeeLeaves(payload.employeeId);
-        } catch (error) {
-            leaveMessage.textContent = error.message;
-            leaveMessage.classList.remove('success');
-        }
-    });
+### Dashboard
+- `GET /api/dashboard`
 
-    const employeeIdInput = document.getElementById('employeeId');
-    if (employeeIdInput) {
-        employeeIdInput.addEventListener('change', () => {
-            loadEmployeeLeaves(Number(employeeIdInput.value));
-        });
-    }
-}
+## Sample Usage
 
-async function loadEmployeeLeaves(employeeId) {
-    const table = document.getElementById('employeeLeaveTable');
-    if (!table || !employeeId) return;
+### Login
 
-    try {
-        const rows = await apiFetch(`${API_BASE}/employees/${employeeId}/leaves`);
-        table.innerHTML = rows.map(leave => `
-            <tr>
-                <td>${leave.leaveType}</td>
-                <td>${leave.startDate}</td>
-                <td>${leave.endDate}</td>
-                <td><span class="status-pill ${statusClass(leave.status)}">${leave.status || 'PENDING'}</span></td>
-            </tr>
-        `).join('');
-    } catch (error) {
-        table.innerHTML = '<tr><td colspan="4">No records found</td></tr>';
-    }
-}
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+### Add employee
+
+```bash
+curl -X POST http://localhost:8080/api/employees \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name":"John Doe",
+    "email":"john@example.com",
+    "phone":"9876543210",
+    "departmentId":1,
+    "salary":45000
+  }'
+```
+
+### Apply leave
+
+```bash
+curl -X POST http://localhost:8080/api/leaves \
+  -H "Content-Type: application/json" \
+  -d '{
+    "employeeId":1,
+    "leaveType":"SICK",
+    "startDate":"2026-11-10",
+    "endDate":"2026-11-12",
+    "reason":"Medical checkup"
+  }'
+```
+
+## Future Improvements
+
+- Pagination and sorting
+- Chart-based dashboard analytics
+- Role-based route guards
+- Improved validation and error messages
+- Better audit trail for leave updates
+- Modern UI polish with Bootstrap or React
+
+## Conclusion
+
+This project provides a strong foundation for a professional Java full-stack application and is suitable for academic projects, internship portfolios, and real-world learning.

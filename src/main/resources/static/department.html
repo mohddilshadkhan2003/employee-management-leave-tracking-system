@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Department Management</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <h2>Department Management</h2>
+            <div class="topbar-actions">
+                <span class="user-badge" id="userBadge">Welcome</span>
+                <button class="secondary" data-logout>Logout</button>
+            </div>
+        </header>
+
+        <div class="layout-grid">
+            <section class="panel">
+                <div class="panel-header">
+                    <h3>Add Department</h3>
+                </div>
+                <form id="departmentForm">
+                    <div class="form-grid">
+                        <div class="full-width">
+                            <label for="departmentName">Department Name</label>
+                            <input id="departmentName" type="text" placeholder="Enter department name" required />
+                        </div>
+                        <div class="full-width">
+                            <button type="submit">Save Department</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="departmentMessage" class="message"></div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-header">
+                    <h3>Department List</h3>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Department Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="departmentTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
