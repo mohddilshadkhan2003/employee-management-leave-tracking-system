@@ -16,8 +16,8 @@
     <description>Full-stack employee and leave management system built with Java, Spring Boot, JdbcTemplate and MySQL.</description>
 
     <properties>
-        <java.version>8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+       <java.version>17</java.version>
+       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
