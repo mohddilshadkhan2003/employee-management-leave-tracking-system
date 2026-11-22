@@ -1,129 +1,273 @@
 # Project Report: EmployeePulse HRMS
 
-## Abstract
+## 1. Abstract
 
-EmployeePulse HRMS is a web-based employee management and leave tracking system designed to manage employee records and staff leave workflows in an organized digital environment. The system allows administrators to add employees, assign departments, approve or reject leave requests, and monitor key HR statistics from a dashboard. Employees can log in, submit leave requests, and track the status of their applications.
+EmployeePulse HRMS is a full-stack web application developed to manage employee records, departments, and leave workflows in an organized digital environment. It provides separate experiences for administrators and employees through a responsive HTML, CSS, and JavaScript interface backed by Java and Spring Boot REST APIs.
 
-This project is built using Java, Spring Boot, MySQL, and frontend web technologies. It demonstrates practical concepts in software engineering such as database design, REST API development, business logic implementation, validation, and responsive UI interaction.
+The system is built with Java 8+, Spring Boot 2.7.18, Spring JDBC, JdbcTemplate, and MySQL. It demonstrates practical software engineering concepts including layered architecture, database design, REST API development, request validation, repository pattern implementation, environment-based configuration, and backend–frontend integration.
 
-## Objectives
+## 2. Objectives
 
-The main objectives of this project are:
+The objectives of this project are:
 
-- streamline employee management in a centralized system
-- simplify leave request tracking and approval
-- reduce manual administrative tasks
-- create a professional Java-based project suitable for portfolio and academic evaluation
-- demonstrate backend and frontend integration in a real workflow
+- Centralize employee and department records in a single application.
+- Simplify employee leave application and administrator approval workflows.
+- Reduce manual follow-ups and spreadsheet-based record keeping.
+- Display dynamically updated HR summary information through a dashboard.
+- Provide a maintainable Java 8-compatible project suitable for academic evaluation and portfolio presentation.
+- Demonstrate integration between Spring MVC controllers, service classes, JDBC repositories, MySQL, and a browser interface.
 
-## Problem Statement
+## 3. Problem Statement
 
-Traditional HR systems often rely on spreadsheets, manual forms, and verbal communication, which leads to duplication, delays, and poor record tracking. Organizations require a secure and centralized method to manage employee information, departments, and leave schedules. EmployeePulse HRMS addresses this need by providing a digital platform that supports efficient employee and leave operations.
+Traditional HR administration often depends on spreadsheets, physical forms, and verbal communication. These methods may lead to duplicate records, delayed approvals, poor status visibility, and difficult record retrieval.
 
-## Scope of the Project
+An organization requires a centralized application that can:
 
-The project includes:
+- maintain accurate employee and department information;
+- manage leave requests in a consistent sequence;
+- provide role-specific screens and operations;
+- expose reliable data through REST endpoints; and
+- remain understandable and deployable in a local or academic environment.
 
-- employee record management
-- department management
-- leave application workflow
-- leave approval and rejection by admin
-- dashboard reporting
-- role-based access for admin and employee users
+EmployeePulse HRMS addresses these needs using a lightweight layered architecture and a MySQL-backed data model.
 
-The project excludes advanced features such as multi-tenant architecture, payroll processing, biometric attendance, and advanced reporting modules, though these can be added in future versions.
+## 4. Scope
 
-## Methodology
+### Included
 
-The project follows a layered architecture using:
+- Admin and employee login views
+- Employee creation, listing, searching, updating, and deletion
+- Department creation and listing
+- Employee leave submission and leave history
+- Leave approval and rejection
+- Admin dashboard metrics
+- REST API endpoints for application operations
+- Configurable database and server settings
+- Java 8-compatible Maven build
 
-- Controller layer for API endpoints
-- Service layer for business logic and validation
-- Repository layer for database interaction using JDBC
-- MySQL for persistent data storage
-- Static web pages and JavaScript for UI interaction
+### Excluded
 
-This structure keeps the project organized and readable while helping developers understand how real-world systems are built.
+The current version does not include payroll processing, biometric attendance, multi-tenant organizations, JWT authentication, password hashing, advanced analytics, or automated notifications.
 
-## Functional Modules
+## 5. Technology Stack
 
-### 1. Authentication Module
-This module manages user login and role-based access. It verifies credentials and redirects users according to their role.
+| Area | Technology |
+| --- | --- |
+| Language | Java 8+ |
+| Backend framework | Spring Boot 2.7.18 / Spring MVC |
+| Database access | Spring JDBC / JdbcTemplate |
+| Database | MySQL 8.x |
+| Frontend | HTML, CSS, JavaScript |
+| Build tool | Maven |
+| Runtime | Embedded Apache Tomcat |
+| Configuration | `application.properties` and environment variables |
 
-### 2. Employee Module
-This module handles employee creation, record display, search, and deletion. It ensures data consistency and prevents duplicate employee email entries.
+## 6. System Architecture
 
-### 3. Department Module
-This module allows the admin to manage departments and assign employees to the proper department.
-
-### 4. Leave Module
-This module supports employee leave requests and admin approval flow. It validates leave dates and updates request status dynamically.
-
-### 5. Dashboard Module
-This module displays key stats such as total employees, pending requests, approved requests, and rejected requests.
-
-## Tools and Technologies
-
-- Java
-- Spring Boot
-- Spring MVC
-- MySQL
-- Maven
-- HTML
-- CSS
-- JavaScript
-
-## System Flow
+The application follows a layered architecture:
 
 ```text
-Admin / Employee Login
-         |
-         v
-Authentication Check
-         |
-         v
-Role Based Redirection
-         |
-         +------> Admin Dashboard
-         |              |
-         |              +--> Employee Management
-         |              +--> Department Management
-         |              +--> Leave Approval
-         |
-         +------> Employee Portal
-                        |
-                        +--> Leave Application
-                        +--> Leave History
+Browser
+  |
+  v
+Static HTML / CSS / JavaScript
+  |
+  v
+REST Controllers
+  |
+  v
+Service Layer
+  |
+  v
+Repository / JdbcTemplate Layer
+  |
+  v
+MySQL Database
 ```
 
-## Advantages of the System
+### Architectural Layers
 
-- easy to use and maintain
-- low cost to develop and run locally
-- good for learning Java-based full-stack development
-- role-based workflow improves accountability
-- dynamically updated dashboard improves visibility
+- **Controller layer:** Handles HTTP requests and exposes REST endpoints.
+- **Service layer:** Implements business rules and validation.
+- **Repository layer:** Executes SQL through `JdbcTemplate`.
+- **Model and DTO layer:** Represents application entities and request payloads.
+- **Exception handling:** Converts application failures into meaningful HTTP responses.
+- **Frontend layer:** Calls REST APIs and renders dynamic dashboard, employee, department, and leave data.
 
-## Limitations
+## 7. Functional Modules
 
-- no advanced security features like JWT or encrypted passwords yet
-- no multi-role hierarchy beyond admin and employee
-- no advanced charts or analytics
-- no advanced reporting generation
+### 7.1 Authentication Module
 
-## Future Enhancements
+The authentication module validates submitted credentials and returns the associated role and username. The frontend uses the returned role to route users between the admin and employee interfaces.
 
-- add user profile management
-- upgrade security with JWT and password hashing
-- implement pagination and sorting
-- add charts and visual analytics
-- allow employee self-service updates
-- add leave calendar view
-- integrate notifications and email alerts
-- support advanced reporting and export options
+> The current implementation is suitable for demonstrations but should be replaced with hashed passwords and server-enforced authentication, authorization, sessions, or JWT before production use.
 
-## Conclusion
+### 7.2 Employee Module
 
-EmployeePulse HRMS is a robust and practical project that demonstrates modern software development practices in a manageable scope. It combines the core concepts of Java backend development, database operations, and interactive front-end design into a working business application. The project is well-suited for a final-year project, internship portfolio, or training exercise in full-stack Java development.
+This module provides:
 
-This system also provides a strong foundation for future enhancement into a larger enterprise HR platform.
+- Employee creation
+- Employee listing
+- Employee lookup by ID
+- Employee updating
+- Employee deletion
+- Keyword search by name or ID
+- Duplicate-email validation
+
+### 7.3 Department Module
+
+Administrators can create departments and retrieve the department list. Employees are associated with departments through a department identifier.
+
+### 7.4 Leave Module
+
+The leave module supports:
+
+- Leave request submission
+- Leave type and reason capture
+- Start and end date validation
+- Default pending status
+- Leave history lookup by employee
+- Administrator approval or rejection
+- Leave request deletion
+
+### 7.5 Dashboard Module
+
+The dashboard module summarizes:
+
+- Total employee count
+- Pending leave requests
+- Approved leave requests
+- Rejected leave requests
+
+## 8. Database Design
+
+The application uses a relational MySQL database. The primary entities are users, departments, employees, and leave requests.
+
+```sql
+CREATE TABLE IF NOT EXISTS users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS departments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS employees (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone VARCHAR(20),
+    department_id INT,
+    salary DOUBLE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+CREATE TABLE IF NOT EXISTS leave_requests (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    leave_type VARCHAR(50) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    reason VARCHAR(255),
+    applied_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (employee_id) REFERENCES employees(id)
+);
+```
+
+The schema is initialized from `src/main/resources/schema.sql` during startup by default.
+
+## 9. REST API Overview
+
+The backend exposes operations under the `/api` base path.
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| POST | `/api/auth/login` | Authenticate a user |
+| GET | `/api/dashboard` | Retrieve dashboard metrics |
+| GET, POST | `/api/departments` | List or create departments |
+| GET, POST | `/api/employees` | List or create employees |
+| GET, PUT, DELETE | `/api/employees/{id}` | Read, update, or delete an employee |
+| GET | `/api/employees/search?keyword=...` | Search employees |
+| GET, POST | `/api/leaves` | List or submit leave requests |
+| GET, DELETE | `/api/leaves/{id}` | Read or delete a leave request |
+| GET | `/api/employees/{employeeId}/leaves` | Read an employee's leave history |
+| PUT | `/api/leaves/{id}/status?status=APPROVED` | Approve or reject a leave request |
+
+## 10. System Workflow
+
+### Administrator Workflow
+
+1. Sign in as an administrator.
+2. Open the dashboard.
+3. Manage departments.
+4. Create, search, update, or delete employees.
+5. Review pending leave requests.
+6. Approve or reject requests.
+7. Monitor dynamically updated summary metrics.
+
+### Employee Workflow
+
+1. Sign in as an employee.
+2. Open the employee leave interface.
+3. Enter employee information and leave details.
+4. Submit the leave request.
+5. Review the resulting leave status.
+
+## 11. Java 8 Compatibility
+
+The project is configured to compile Java 8-compatible bytecode. Its Maven configuration declares Java source and target levels as `1.8` and uses Spring Boot 2.7.18, which supports Java 8.
+
+Database credentials and runtime settings are configurable through environment variables. These values may be set without modifying source code or checked-in configuration:
+
+- `PORT`
+- `DB_URL`
+- `DB_USERNAME`
+- `DB_PASSWORD`
+- `DB_POOL_MAX`
+- `DB_POOL_MIN_IDLE`
+- `SQL_INIT_MODE`
+
+## 12. Advantages
+
+- Uses a clear layered architecture.
+- Requires only Java, Maven, and MySQL for local execution.
+- Provides complete employee and leave-management demonstrations.
+- Uses database-backed data instead of temporary in-memory storage.
+- Separates business logic, persistence, and HTTP handling.
+- Provides dynamically updated dashboards and request states.
+- Can be used for academic projects, portfolio demonstrations, and internship previews.
+
+## 13. Limitations
+
+- Authentication is demonstration-level and does not use hashed passwords or server-side session enforcement.
+- Browser-side role routing alone should not be treated as authorization.
+- The interface has a basic presentation and does not provide advanced charts.
+- Pagination, sorting, and advanced filtering are not implemented.
+- No notification or reporting export system is included.
+- The project does not currently provide automated test coverage for every module.
+
+## 14. Future Enhancements
+
+- Add Spring Security with password hashing and session or JWT authentication.
+- Enforce authorization on all protected API endpoints.
+- Implement pagination and sorting for employees and leave requests.
+- Add employee profile management and self-service updates.
+- Add leave calendars and working-day calculations.
+- Add charts and data visualizations.
+- Add email or in-app notifications.
+- Add CSV/PDF report exports.
+- Add automated unit and integration tests.
+- Containerize the application with Docker and Docker Compose.
+
+## 15. Conclusion
+
+EmployeePulse HRMS is a practical full-stack project for demonstrating employee, department, and leave-management workflows using Java 8, Spring Boot, MySQL, and browser technologies. It combines REST API development, JDBC persistence, layered application design, and responsive user interaction in a manageable scope.
+
+The project provides a strong foundation for academic evaluation and future enhancement into a production-oriented HR platform, provided that authentication, authorization, secure password storage, validation, testing, and deployment controls are strengthened.
